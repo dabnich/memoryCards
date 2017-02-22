@@ -25,6 +25,7 @@ tr{
 <body>
 
 <button onclick="createGame()">start</button>
+<button onclick="resetGame()">reset</button>
 <div id="a"></div>
 
 <script type="text/javascript">
@@ -60,7 +61,14 @@ function createGame(){
 	counter = 0;
 	uncoverCards = [-1,-1];
 	actions = 0;
-	createTable(3,2);
+	run = false;
+	createTable(4,3);
+}
+
+function resetGame(){
+	for(var i=0; i<4*3; i++){
+		cards[i] = 0;
+	}
 }
 
 function createTable(cols, rows) {
@@ -198,7 +206,7 @@ function showCard(cardEl) {
 				uncoverCards[0] = cardEl.id;
 				uncoverCards[1] = -1;			
 				cards[uncoverCards[0]] = 1;
-				//hideCards(cardEl);
+				timer = 1500;
 				//return false;
 			}
 		}
