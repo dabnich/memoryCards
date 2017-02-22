@@ -123,12 +123,10 @@ function controll() {
         if (uncoverCards[0]>-1) {
 			cards[uncoverCards[0]] = 0;
 			uncoverCards[0] = -1;
-			//document.getElementById(uncoverCards[0]).innerHTML = "";
         }
 		if (uncoverCards[1]>-1) {
 			cards[uncoverCards[1]] = 0;
 			uncoverCards[1] = -1;
-			//document.getElementById(uncoverCards[1]).innerHTML = "";
         }
 		timer = 1500;
     }
@@ -202,7 +200,6 @@ function showCard(cardEl) {
 			else{ //sytuacja gdy czekamy az schowaja sie 2 nieprawidlowe odkryte karty i klikniemy w jeszcze jakas inna karte
 				cards[uncoverCards[0]] = 0;
 				cards[uncoverCards[1]] = 0;	
-					//return false;
 				uncoverCards[0] = cardEl.id;
 				uncoverCards[1] = -1;			
 				cards[uncoverCards[0]] = 1;
