@@ -24,8 +24,7 @@ tr{
 </head>
 <body>
 
-<button onclick="createTable(3,2)">create</button>
-<button onclick="start()">start</button>
+<button onclick="createGame()">start</button>
 <div id="a"></div>
 
 <script type="text/javascript">
@@ -38,11 +37,30 @@ var timer = 3000;
 var counter = 0;
 var rate = 1000/25;
 var run = false;
-var actions=0;
-var interval;
+var actions = 0;
+var interval = 0;
 
 function start() {
 	interval = setInterval(function(){controll();}, rate);
+}
+
+function createGame(){
+	if(interval!=0){
+		clearInterval(interval);
+	}
+	interval = 0;
+	var t = document.getElementsByTagName("table");
+	if(t.length>0){
+		var table = t[0];
+		table.parentElement.removeChild(table);
+	}
+	if(cards.length>0) cards = new Array();
+	if(ids.length>0) ids = new Array();
+	timer=3000;
+	counter = 0;
+	uncoverCards = [-1,-1];
+	actions = 0;
+	createTable(3,2);
 }
 
 function createTable(cols, rows) {
@@ -69,11 +87,12 @@ function createTable(cols, rows) {
 			ids.push(rand);
 			td.id = rand;
 			td.onclick = function(){showCard(this);};
+			/*
 			var h6 = document.createElement("h6");
 			var node = document.createTextNode(Math.floor(rand/2));
 			h6.appendChild(node);
 			td.appendChild(h6);
-			//td.appendChild(document.createTextNode(Math.floor(rand/2)));
+			*/
 			tr.appendChild(td);
 		}
 		table.appendChild(tr);
@@ -118,10 +137,18 @@ function controll() {
 	}
 	document.getElementById("a").textContent = data;
 	if (isEnd()==true) {
-        clearInterval(interval);
-		alert("Finish Game in "+counter/1000+"s  and "+actions+" actions");
-    }
+        endGame();
+	}
 	counter = counter+rate;
+}
+
+function endGame(){
+	if(run==true) run = false;
+	if(interval!=0){
+		clearInterval(interval);
+		interval = 0;
+	}
+	alert("Finish Game in "+counter/1000+"s  and "+actions+" actions");	
 }
 
 function showCard(cardEl) {
