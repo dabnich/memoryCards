@@ -24,7 +24,7 @@ tr{
 </head>
 <body>
 
-<button onclick="createTable(4,4)">create</button>
+<button onclick="createTable(3,2)">create</button>
 <button onclick="start()">start</button>
 <div id="a"></div>
 
@@ -35,10 +35,14 @@ var uncoverCards = [-1,-1];
 var cards = new Array();  //macierz odkrytych/zakrytych kart do wyświetlenia na ekranie
 var ids = new Array();    //tylko dla losowania id kart przy generowaniu tabelki
 var timer = 3000;
+var counter = 0;
 var rate = 1000/25;
+var run = false;
+var actions=0;
+var interval;
 
 function start() {
-	setInterval(function(){controll();}, rate);
+	interval = setInterval(function(){controll();}, rate);
 }
 
 function createTable(cols, rows) {
@@ -101,6 +105,7 @@ function controll() {
         }
 		timer = 1500;
     }
+	var data="";
 	for(var i=0; i<cards.length; i++){
 		if (cards[i]==1) {
             document.getElementById(i).style.border = "solid 2px red";
@@ -109,11 +114,22 @@ function controll() {
 			document.getElementById(i).textContent = "";
 			document.getElementById(i).style.border = "solid 1px black";
 		}
+		data = data+","+cards[i];
 	}
+	document.getElementById("a").textContent = data;
+	if (isEnd()==true) {
+        clearInterval(interval);
+		alert("Finish Game in "+counter/1000+"s  and "+actions+" actions");
+    }
+	counter = counter+rate;
 }
 
 function showCard(cardEl) {
-    if(cards[cardEl.id]==1) {
+    if (run==false) {
+		start();
+		run = true;
+    }
+	if(cards[cardEl.id]==1) {
 		if (!isPair(cardEl.id)) {
             cards[cardEl.id] = 0;
 			if (uncoverCards[0]>-1) {
@@ -135,12 +151,9 @@ function showCard(cardEl) {
 		}
 		else{
 			if(uncoverCards[1]==-1) {
-				
 				uncoverCards[1] = cardEl.id;
 				cards[cardEl.id] = 1;
-				document.getElementById("a").innerHTML += Math.floor(uncoverCards[0]/2)+" , "+Math.floor(uncoverCards[1]/2);
 				if(Math.floor(uncoverCards[0]/2)==Math.floor(uncoverCards[1]/2)) {
-					//alert(uncoverCards[0]+" , "+uncoverCards[1]+"_____"+Math.floor(uncoverCards[0]/2)+" , "+Math.floor(uncoverCards[1]/2));
 					cards[uncoverCards[0]] = 1;
 					cards[uncoverCards[1]] = 1;				
 					uncoverCards[0] = -1;
@@ -155,7 +168,6 @@ function showCard(cardEl) {
 				cards[uncoverCards[0]] = 0;
 				cards[uncoverCards[1]] = 0;	
 					//return false;
-				
 				uncoverCards[0] = cardEl.id;
 				uncoverCards[1] = -1;			
 				cards[uncoverCards[0]] = 1;
@@ -163,6 +175,7 @@ function showCard(cardEl) {
 				//return false;
 			}
 		}
+		actions = actions+1;
 	}
 	if (uncoverCards[0]>-1){
         cards[uncoverCards[0]] = 1;
@@ -179,6 +192,16 @@ function showCard(cardEl) {
 			//document.getElementById(i).textContent = "";
         }
 	}
+}
+
+function isEnd() {
+    for(var i=0; i<cards.length; i++){
+		if(cards[i]==0) return false
+	}
+	if (uncoverCards[0]>-1 || uncoverCards[1]>-1) {
+        return false;
+    }
+	return true;
 }
 
 function isPair(id) {
