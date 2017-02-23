@@ -40,6 +40,8 @@ var rate = 1000/25;
 var run = false;
 var actions = 0;
 var interval = 0;
+var cols = 4;
+var rows = 3;
 
 function start() {
 	interval = setInterval(function(){controll();}, rate);
@@ -62,11 +64,11 @@ function createGame(){
 	uncoverCards = [-1,-1];
 	actions = 0;
 	run = false;
-	createTable(4,3);
+	createTable(cols, rows);
 }
 
 function resetGame(){
-	for(var i=0; i<4*3; i++){
+	for(var i=0; i<cols*rows; i++){
 		cards[i] = 0;
 	}
 }
@@ -161,16 +163,17 @@ function endGame(){
 function saveResult(){
 	var http = getXMLHttpRequest();
 	http.onreadystatechange = function (){
+		//alert("readyState: "+this.readyState+"    "+"status: "+this.status);
 		if(this.readyState==4 && this.status==200){
 			alert(this.responseText);
 		}
 		else {
-			alert("error");
+			//alert("error");
 		}
 	};	
 	http.open("POST", "db.php", true);
 	http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-	http.send("save=1&game=12&action="+actions+"&time="+counter/1000);
+	http.send("save=1&game="+cols*rows+"&actions="+actions+"&time="+counter/1000);
 }
 
 function showCard(cardEl) {
