@@ -25,8 +25,10 @@ tr{
 </head>
 <body>
 <button onclick="createGame()">start</button>
-<button onclick="resetGame()">reset</button>
+<button onclick="resetGame()">resetGame</button>
+<button onclick="showResults(1)">showResults</button>
 <div id="a"></div>
+<div id="b"></div>
 
 <script type="text/javascript">
 
@@ -40,8 +42,8 @@ var rate = 1000/25;
 var run = false;
 var actions = 0;
 var interval = 0;
-var cols = 4;
-var rows = 3;
+var cols = 2;
+var rows = 1;
 
 function start() {
 	interval = setInterval(function(){controll();}, rate);
@@ -173,7 +175,40 @@ function saveResult(){
 	};	
 	http.open("POST", "db.php", true);
 	http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-	http.send("save=1&game="+cols*rows+"&actions="+actions+"&time="+counter/1000);
+	http.send("request=1&game="+cols*rows+"&actions="+actions+"&time="+counter/1000);
+}
+
+function showResults(game){
+	var http = getXMLHttpRequest();
+	http.onreadystatechange = function (){
+		//alert("readyState: "+this.readyState+"    "+"status: "+this.status);
+		if(this.readyState==4 && this.status==200){
+			var srcText = this.responseText.split(String.fromCharCode(10));
+			
+			for(var i=0; i<srcText.length; i++){
+				var result = srcText[i].split("|");
+				if(result.length>1){
+					var outText = "";
+					for(var n=0; n<result.length; n++){
+						outText = outText+" , "+result[n];
+					}
+					var p = document.createElement("p");
+					p.textContent = outText;
+					document.getElementById("b").appendChild(p);
+				}
+			}
+		}
+		else {
+			//alert("error");
+		}
+	};	
+	http.open("POST", "db.php", true);
+	http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+	http.send("request=2");	
+}
+
+function prepareResults(text, game){
+	
 }
 
 function showCard(cardEl) {
